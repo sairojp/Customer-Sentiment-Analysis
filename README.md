@@ -46,6 +46,8 @@ uvicorn app:app --reload
 This will start the server on `http://127.0.0.1:8000/`
 
 ---
+## Interface
+![Frontend UI](static/image.png)
 
 
 ## Model Safe Tensors
