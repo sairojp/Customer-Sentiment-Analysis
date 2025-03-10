@@ -50,6 +50,7 @@ This will start the server on `http://127.0.0.1:8000/`
 
 ## Model Safe Tensors
 Since the safe tensors exceeds the size limit you need to download it here and move it inside Model.
+[Model SafeTensors](https://drive.google.com/file/d/16PulXP7jeuMx6ly6Vj9ZLtLa5b523CIC/view?usp=sharing)
 ## Contributing
 Feel free to submit issues and pull requests for improvements!
 
