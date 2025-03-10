@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Sentiment Analysis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#3b82f6',
+              foreground: '#ffffff',
+            },
+            muted: {
+              DEFAULT: '#f3f4f6',
+              foreground: '#6b7280',
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .btn {
+        @apply px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+      }
+      .btn-primary {
+        @apply bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary;
+      }
+      .btn-outline {
+        @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary;
+      }
+      .card {
+        @apply bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden;
+      }
+      .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-white to-gray-100">
+  <div class="container mx-auto px-4 py-10">
+    <header class="mb-10 text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-2">Customer Sentiment Analysis</h1>
+      <p class="text-muted-foreground max-w-2xl mx-auto">
+        Analyze customer feedback to understand sentiment and improve your products and services.
+      </p>
+    </header>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      <!-- Main Analysis Card -->
+      <div class="card md:col-span-2">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold">Analyze Customer Feedback</h2>
+          <p class="text-sm text-gray-500">
+            Enter customer feedback to analyze sentiment and identify key insights.
+          </p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="px-6 pt-6">
+          <div class="flex border-b border-gray-200">
+            <button id="input-tab" class="px-4 py-2 border-b-2 border-primary text-primary font-medium">Input</button>
+            <button id="result-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-500 font-medium" disabled>Result</button>
+          </div>
+        </div>
+
+        <!-- Input Content -->
+        <div id="input-content" class="p-6">
+          <textarea 
+            id="feedback-text" 
+            placeholder="Enter customer feedback here..." 
+            class="w-full min-h-[200px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+          ></textarea>
+          <div class="flex justify-between mt-4">
+            <button id="clear-btn" class="btn btn-outline flex items-center" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+              Clear
+            </button>
+            <button id="analyze-btn" class="btn btn-primary flex items-center" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              Analyze Sentiment
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Content -->
+        <div id="result-content" class="p-6 hidden">
+          <div id="sentiment-result" class="space-y-6">
+            <!-- Results will be inserted here by JavaScript -->
+          </div>
+          <div class="mt-6">
+            <button id="analyze-another-btn" class="btn btn-primary w-full">
+              Analyze Another Response
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Card -->
+      <div class="card">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-semibold">Analysis History</h2>
+            <p id="history-count" class="text-sm text-gray-500">
+              Your analysis history will appear here
+            </p>
+          </div>
+          <button id="clear-history-btn" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+          </button>
+        </div>
+        <div id="history-content" class="p-6">
+          <div id="empty-history" class="flex flex-col items-center justify-center py-8 text-center text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <p>No analysis history yet</p>
+            <p class="text-sm">Analyzed feedback will appear here</p>
+          </div>
+          <div id="history-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 hidden">
+            <!-- History items will be inserted here by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/script.js"></script>
+</body>
+</html>
+
